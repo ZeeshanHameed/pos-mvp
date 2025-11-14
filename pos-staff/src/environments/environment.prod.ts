@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://your-production-api.com/api/v1',
-  wsUrl: 'wss://your-production-api.com',
+  apiUrl: 'https://pos-mvp-76vh.onrender.com/api/v1',
+  wsUrl: 'wss://pos-mvp-76vh.onrender.com',
   firebase: {
     apiKey: "AIzaSyA_l7oEODLXUkjl6x2T-Z5nCSV28Shydow",
     authDomain: "pos-mvp-3a55a.firebaseapp.com",
