@@ -35,6 +35,32 @@
                 <span class="stock-badge in-stock">In Stock</span>
               }
             </div>
+
+            <!-- Quantity Controls -->
+            @if (!isOutOfStock(item)) {
+              <div class="quantity-controls">
+                <span class="quantity-label">Quantity:</span>
+                <div class="quantity-buttons">
+                  <button
+                    mat-icon-button
+                    (click)="decreaseQuantity(item.id)"
+                    [disabled]="getQuantity(item.id) <= 1"
+                    class="quantity-btn"
+                  >
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                  <span class="quantity-display">{{ getQuantity(item.id) }}</span>
+                  <button
+                    mat-icon-button
+                    (click)="increaseQuantity(item.id, item.remaining_stock)"
+                    [disabled]="getQuantity(item.id) >= item.remaining_stock"
+                    class="quantity-btn"
+                  >
+                    <mat-icon>add</mat-icon>
+                  </button>
+                </div>
+              </div>
+            }
           </mat-card-content>
           <mat-card-actions>
             <button

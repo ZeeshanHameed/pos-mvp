@@ -21,19 +21,19 @@ export class CartService {
     return this.cartItems().reduce((sum, item) => sum + item.qty, 0);
   });
 
-  addItem(item: { id: string; name: string; price: number }): void {
+  addItem(item: { id: string; name: string; price: number }, qty: number = 1): void {
     const currentItems = this.cartItems();
     const existingItem = currentItems.find(i => i.id === item.id);
 
     if (existingItem) {
       // Increment quantity
       const updatedItems = currentItems.map(i =>
-        i.id === item.id ? { ...i, qty: i.qty + 1 } : i
+        i.id === item.id ? { ...i, qty: i.qty + qty } : i
       );
       this.cartItems.set(updatedItems);
     } else {
       // Add new item
-      this.cartItems.set([...currentItems, { ...item, qty: 1 }]);
+      this.cartItems.set([...currentItems, { ...item, qty }]);
     }
   }
 
