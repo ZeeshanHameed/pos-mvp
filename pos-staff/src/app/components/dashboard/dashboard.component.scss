@@ -93,6 +93,7 @@
 .order-card {
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
+  border-radius: 16px !important;
 
   &:hover {
     transform: translateY(-4px);
@@ -138,6 +139,7 @@
   padding: 48px;
   text-align: center;
   background-color: #fafafa;
+  border-radius: 16px !important;
 
   mat-icon {
     font-size: 64px;

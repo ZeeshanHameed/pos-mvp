@@ -19,27 +19,26 @@
     <div class="tracking-content">
       <!-- Order Confirmation -->
       <mat-card class="confirmation-card">
-        <mat-card-header>
-          <mat-icon mat-card-avatar class="success-icon">check_circle</mat-icon>
-          <mat-card-title>Order Confirmed!</mat-card-title>
-          <mat-card-subtitle>Order #{{ order()!.id.substring(0, 8) }}</mat-card-subtitle>
-        </mat-card-header>
         <mat-card-content>
-          <p class="confirmation-message">
-            Thank you for your order! We'll prepare it with care and deliver it to you soon.
-          </p>
+          <div class="thank-you-section">
+            <mat-icon class="success-icon-large">check_circle</mat-icon>
+            <h1 class="thank-you-title">Thank You, {{ order()!.customer.name }}!</h1>
+            <p class="thank-you-subtitle">Your order has been confirmed</p>
+            <p class="order-id">Order #{{ order()!.id.substring(0, 8) }}</p>
+          </div>
+
+          <mat-divider></mat-divider>
+
           <div class="order-info">
-            <div class="info-row">
-              <mat-icon>person</mat-icon>
-              <span>{{ order()!.customer.name }}</span>
-            </div>
-            <div class="info-row">
-              <mat-icon>location_on</mat-icon>
-              <span>{{ order()!.customer.delivery_address }}</span>
-            </div>
-            <div class="info-row">
-              <mat-icon>schedule</mat-icon>
-              <span>{{ formatDate(order()!.order_date) }}</span>
+            <div class="info-row single-line">
+              <div class="info-item">
+                <mat-icon>location_on</mat-icon>
+                <span>{{ order()!.customer.delivery_address }}</span>
+              </div>
+              <div class="info-item">
+                <mat-icon>schedule</mat-icon>
+                <span>{{ formatDate(order()!.order_date) }}</span>
+              </div>
             </div>
           </div>
         </mat-card-content>

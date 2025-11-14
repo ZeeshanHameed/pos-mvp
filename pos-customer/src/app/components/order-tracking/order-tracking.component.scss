@@ -56,34 +56,75 @@
 }
 
 .confirmation-card {
-  .success-icon {
-    background-color: #4caf50;
-    color: white;
+  .thank-you-section {
+    text-align: center;
+    padding: 24px 0;
+
+    .success-icon-large {
+      font-size: 72px;
+      width: 72px;
+      height: 72px;
+      color: #4caf50;
+      margin-bottom: 16px;
+    }
+
+    .thank-you-title {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #333;
+      margin: 0 0 8px 0;
+    }
+
+    .thank-you-subtitle {
+      font-size: 1.1rem;
+      color: #666;
+      margin: 0 0 16px 0;
+    }
+
+    .order-id {
+      font-size: 0.95rem;
+      color: #999;
+      font-weight: 500;
+      margin: 0;
+    }
   }
 
-  .confirmation-message {
-    margin: 16px 0;
-    font-size: 1.1rem;
-    color: #666;
+  mat-divider {
+    margin: 24px 0;
   }
 
   .order-info {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 16px;
+    padding: 0 16px 8px;
 
     .info-row {
       display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 12px;
 
-      mat-icon {
-        color: #666;
+      &.single-line {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
       }
 
-      span {
-        font-size: 1rem;
+      .info-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        mat-icon {
+          color: #666;
+          font-size: 20px;
+          width: 20px;
+          height: 20px;
+        }
+
+        span {
+          font-size: 0.95rem;
+          color: #333;
+        }
       }
     }
   }
@@ -120,6 +161,9 @@
         font-size: 28px;
         width: 28px;
         height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
 
@@ -182,6 +226,7 @@
 
     mat-icon {
       margin-right: 8px;
+      vertical-align: middle;
     }
   }
 }
@@ -235,6 +280,15 @@ mat-list-item {
 }
 
 @media (max-width: 768px) {
+  .confirmation-card {
+    .order-info {
+      .info-row.single-line {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  }
+
   .status-timeline {
     flex-direction: column;
     gap: 24px;

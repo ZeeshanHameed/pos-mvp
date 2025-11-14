@@ -1,7 +1,14 @@
 <mat-toolbar color="primary">
   <span>POS Customer - Order Online</span>
   <span class="spacer"></span>
-  <button mat-icon-button (click)="goToCheckout()" [matBadge]="cartItemCount()" matBadgeColor="warn">
+  <button
+    mat-icon-button
+    (click)="goToCheckout()"
+    [matBadge]="cartItemCount() > 0 ? cartItemCount() : null"
+    matBadgeColor="warn"
+    matBadgeSize="small"
+    class="cart-button"
+  >
     <mat-icon>shopping_cart</mat-icon>
   </button>
 </mat-toolbar>
@@ -35,12 +42,12 @@
                 <span class="stock-badge in-stock">In Stock</span>
               }
             </div>
-
-            <!-- Quantity Controls -->
+          </mat-card-content>
+          <mat-card-actions>
+            <!-- Quantity Controls and Add to Cart in single line -->
             @if (!isOutOfStock(item)) {
-              <div class="quantity-controls">
-                <span class="quantity-label">Quantity:</span>
-                <div class="quantity-buttons">
+              <div class="action-row">
+                <div class="quantity-controls">
                   <button
                     mat-icon-button
                     (click)="decreaseQuantity(item.id)"
@@ -59,20 +66,25 @@
                     <mat-icon>add</mat-icon>
                   </button>
                 </div>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  (click)="addToCart(item)"
+                  class="add-to-cart-btn"
+                >
+                  <mat-icon>add_shopping_cart</mat-icon>
+                  Add
+                </button>
               </div>
+            } @else {
+              <button
+                mat-raised-button
+                disabled
+                class="full-width"
+              >
+                Out of Stock
+              </button>
             }
-          </mat-card-content>
-          <mat-card-actions>
-            <button
-              mat-raised-button
-              color="primary"
-              (click)="addToCart(item)"
-              [disabled]="isOutOfStock(item)"
-              class="full-width"
-            >
-              <mat-icon>add_shopping_cart</mat-icon>
-              Add to Cart
-            </button>
           </mat-card-actions>
         </mat-card>
       }

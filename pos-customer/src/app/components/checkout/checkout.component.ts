@@ -105,8 +105,16 @@ export class CheckoutComponent implements OnInit {
         // Set the order data immediately so tracking page doesn't need to fetch
         this.orderService.setCurrentOrder(response.data.order);
 
+        // Clear cart and reset form
         this.cartService.clearCart();
         this.checkoutForm.reset();
+
+        // Mark form as pristine and untouched to prevent validation errors
+        Object.keys(this.checkoutForm.controls).forEach(key => {
+          this.checkoutForm.controls[key].setErrors(null);
+          this.checkoutForm.controls[key].markAsPristine();
+          this.checkoutForm.controls[key].markAsUntouched();
+        });
 
         // Navigate to order tracking page
         this.router.navigate(['/order', response.data.orderId]);

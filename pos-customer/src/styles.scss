@@ -92,24 +92,60 @@ body {
   background: #555;
 }
 
-// Snackbar styles
+// Snackbar styles with improved look and feel
 .success-snackbar {
-  background-color: #4caf50 !important;
-  color: white !important;
+  --mdc-snackbar-container-color: #4caf50 !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .mat-mdc-button {
+    color: white !important;
+    font-weight: 600 !important;
+  }
 }
 
 .error-snackbar {
-  background-color: #f44336 !important;
-  color: white !important;
+  --mdc-snackbar-container-color: #f44336 !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .mat-mdc-button {
+    color: white !important;
+    font-weight: 600 !important;
+  }
 }
 
 .warning-snackbar {
-  background-color: #ff9800 !important;
-  color: white !important;
+  --mdc-snackbar-container-color: #ff9800 !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .mat-mdc-button {
+    color: white !important;
+    font-weight: 600 !important;
+  }
 }
 
 .info-snackbar {
-  background-color: #2196f3 !important;
-  color: white !important;
+  --mdc-snackbar-container-color: #2196f3 !important;
+  --mat-snack-bar-button-color: #ffffff !important;
+
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+
+  .mat-mdc-button {
+    color: white !important;
+    font-weight: 600 !important;
+  }
 }
 

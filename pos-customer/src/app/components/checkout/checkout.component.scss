@@ -103,11 +103,17 @@
 
   mat-icon {
     margin-right: 8px;
+    vertical-align: middle;
   }
 
   mat-spinner {
     display: inline-block;
     margin-right: 12px;
+    vertical-align: middle;
+  }
+
+  span {
+    vertical-align: middle;
   }
 }
 

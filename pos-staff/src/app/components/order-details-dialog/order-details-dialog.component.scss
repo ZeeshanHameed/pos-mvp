@@ -1,73 +1,87 @@
 .dialog-container {
-  min-width: 500px;
-  max-width: 600px;
+  min-width: 600px;
+  max-width: 700px;
 }
 
 .dialog-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 24px;
-  margin-bottom: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 24px;
+  margin: -24px -24px 0 -24px;
+  border-radius: 4px 4px 0 0;
 
-  h2 {
+  .header-content {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 12px;
-    margin: 0;
-    font-size: 24px;
-    font-weight: 500;
 
-    mat-icon {
-      font-size: 28px;
-      height: 28px;
-      width: 28px;
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .header-icon {
+        font-size: 40px;
+        height: 40px;
+        width: 40px;
+        color: white;
+      }
+
+      .header-text {
+        h2 {
+          margin: 0;
+          font-size: 24px;
+          font-weight: 600;
+          color: white;
+        }
+
+        .order-id {
+          font-size: 14px;
+          opacity: 0.9;
+        }
+      }
+    }
+
+    mat-chip {
+      background-color: rgba(255, 255, 255, 0.2) !important;
+      color: white !important;
+      font-weight: 600;
     }
   }
 }
 
 mat-dialog-content {
-  padding: 0 24px 24px;
+  padding: 24px;
   max-height: 70vh;
   overflow-y: auto;
-}
-
-.order-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-
-  .order-id {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
-    .label {
-      font-size: 12px;
-      color: #666;
-      text-transform: uppercase;
-    }
-
-    .value {
-      font-size: 20px;
-      font-weight: 600;
-      color: #333;
-    }
-  }
 }
 
 .info-section {
   margin-bottom: 24px;
 
-  .info-row {
+  &.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    background-color: #f9f9f9;
+    padding: 16px;
+    border-radius: 8px;
+  }
+
+  .info-item {
     display: flex;
     align-items: flex-start;
     gap: 12px;
-    padding: 12px 0;
+    padding: 8px;
+    background-color: white;
+    border-radius: 6px;
+
+    &.full-width {
+      grid-column: 1 / -1;
+    }
 
     mat-icon {
-      color: #666;
+      color: #667eea;
       font-size: 20px;
       height: 20px;
       width: 20px;
@@ -81,14 +95,17 @@ mat-dialog-content {
       flex: 1;
 
       .label {
-        font-size: 12px;
+        font-size: 11px;
         color: #666;
         text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
       }
 
       .value {
         font-size: 14px;
         color: #333;
+        font-weight: 500;
       }
     }
   }
@@ -183,7 +200,14 @@ mat-divider {
 }
 
 .status-update-section {
-  margin-top: 24px;
+  margin-bottom: 24px;
+
+  &.top {
+    background-color: #fff3e0;
+    padding: 16px;
+    border-radius: 8px;
+    border-left: 4px solid #ff9800;
+  }
 
   h3 {
     display: flex;
@@ -191,18 +215,38 @@ mat-divider {
     gap: 8px;
     margin: 0 0 16px 0;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 600;
     color: #333;
 
     mat-icon {
       font-size: 20px;
       height: 20px;
       width: 20px;
+      color: #ff9800;
     }
   }
 
-  .status-select {
-    width: 100%;
+  .status-update-controls {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+
+    .status-select {
+      flex: 1;
+    }
+
+    .update-btn {
+      margin-top: 8px;
+      height: 40px;
+
+      mat-icon {
+        margin-right: 4px;
+        font-size: 18px;
+        height: 18px;
+        width: 18px;
+        vertical-align: middle;
+      }
+    }
   }
 }
 
@@ -212,13 +256,37 @@ mat-dialog-actions {
   gap: 12px;
   padding: 16px 24px;
   border-top: 1px solid #e0e0e0;
+  background-color: #fafafa;
 
   button {
+    min-width: 100px;
+
     mat-icon {
       margin-right: 4px;
       font-size: 18px;
       height: 18px;
       width: 18px;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .dialog-container {
+    min-width: 100%;
+    max-width: 100%;
+  }
+
+  .info-section.info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .status-update-section .status-update-controls {
+    flex-direction: column;
+
+    .update-btn {
+      width: 100%;
+      margin-top: 0;
     }
   }
 }

@@ -2,6 +2,19 @@
   flex: 1 1 auto;
 }
 
+.cart-button {
+  position: relative;
+
+  ::ng-deep .mat-badge-content {
+    right: 8px !important;
+    top: 8px !important;
+    font-size: 10px !important;
+    width: 18px !important;
+    height: 18px !important;
+    line-height: 18px !important;
+  }
+}
+
 .menu-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -46,6 +59,7 @@
 
 .menu-item-card {
   transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 16px !important;
 
   &:hover:not(.out-of-stock) {
     transform: translateY(-4px);
@@ -100,49 +114,56 @@
   }
 }
 
-.quantity-controls {
+.action-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 16px;
-  padding: 12px;
+  gap: 12px;
+  width: 100%;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   background-color: #f5f5f5;
   border-radius: 8px;
+  padding: 4px;
 
-  .quantity-label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #666;
+  .quantity-btn {
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    padding: 0 !important;
+
+    mat-icon {
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
+      line-height: 20px;
+    }
   }
 
-  .quantity-buttons {
+  .quantity-display {
+    min-width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    padding: 0 8px;
+    line-height: 32px;
+  }
+}
 
-    .quantity-btn {
-      width: 32px;
-      height: 32px;
-      line-height: 32px;
+.add-to-cart-btn {
+  flex: 1;
 
-      mat-icon {
-        font-size: 18px;
-        height: 18px;
-        width: 18px;
-      }
-    }
-
-    .quantity-display {
-      min-width: 40px;
-      text-align: center;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #333;
-      padding: 4px 12px;
-      background-color: white;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-    }
+  mat-icon {
+    margin-right: 4px;
   }
 }
 

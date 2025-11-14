@@ -1,28 +1,65 @@
 <div class="dialog-container">
+  <!-- Proper Header with Background -->
   <div class="dialog-header">
-    <h2 mat-dialog-title>
-      <mat-icon>receipt_long</mat-icon>
-      Order Details
-    </h2>
-    <button mat-icon-button (click)="close()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-
-  <mat-dialog-content>
-    <!-- Order Info -->
-    <div class="order-header">
-      <div class="order-id">
-        <span class="label">Order ID:</span>
-        <span class="value">#{{ order.id.substring(0, 8) }}</span>
+    <div class="header-content">
+      <div class="header-left">
+        <mat-icon class="header-icon">receipt_long</mat-icon>
+        <div class="header-text">
+          <h2>Order Details</h2>
+          <span class="order-id">#{{ order.id.substring(0, 8) }}</span>
+        </div>
       </div>
       <mat-chip [color]="getStatusColor(order.order_status)" highlighted>
         {{ order.order_status }}
       </mat-chip>
     </div>
+  </div>
 
-    <div class="info-section">
-      <div class="info-row">
+  <mat-dialog-content>
+    <!-- Status Update Section (Only for Active Orders) - Moved to Top -->
+    @if (isActive) {
+      <div class="status-update-section top">
+        <h3>
+          <mat-icon>update</mat-icon>
+          Update Order Status
+        </h3>
+        <div class="status-update-controls">
+          <mat-form-field appearance="outline" class="status-select">
+            <mat-label>Order Status</mat-label>
+            <mat-select [(ngModel)]="selectedStatus">
+              @for (status of statusOptions; track status) {
+                <mat-option [value]="status">{{ status }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="updateStatus()"
+            [disabled]="updating() || selectedStatus === order.order_status"
+            class="update-btn"
+          >
+            @if (updating()) {
+              <ng-container>
+                <mat-icon>hourglass_empty</mat-icon>
+                Updating...
+              </ng-container>
+            } @else {
+              <ng-container>
+                <mat-icon>check</mat-icon>
+                Update
+              </ng-container>
+            }
+          </button>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+    }
+
+    <!-- Order Info in Grid Layout -->
+
+    <div class="info-section info-grid">
+      <div class="info-item">
         <mat-icon>event</mat-icon>
         <div class="info-content">
           <span class="label">Order Date</span>
@@ -30,7 +67,7 @@
         </div>
       </div>
 
-      <div class="info-row">
+      <div class="info-item">
         <mat-icon>person</mat-icon>
         <div class="info-content">
           <span class="label">Customer</span>
@@ -38,17 +75,7 @@
         </div>
       </div>
 
-      @if (order.customer.delivery_address) {
-        <div class="info-row">
-          <mat-icon>location_on</mat-icon>
-          <div class="info-content">
-            <span class="label">Delivery Address</span>
-            <span class="value">{{ order.customer.delivery_address }}</span>
-          </div>
-        </div>
-      }
-
-      <div class="info-row">
+      <div class="info-item">
         <mat-icon>store</mat-icon>
         <div class="info-content">
           <span class="label">Order Type</span>
@@ -57,11 +84,21 @@
       </div>
 
       @if (order.order_by) {
-        <div class="info-row">
+        <div class="info-item">
           <mat-icon>badge</mat-icon>
           <div class="info-content">
             <span class="label">Created By</span>
-            <span class="value">{{ order.order_by.name }} ({{ order.order_by.user_type }})</span>
+            <span class="value">{{ order.order_by.name }}</span>
+          </div>
+        </div>
+      }
+
+      @if (order.customer.delivery_address) {
+        <div class="info-item full-width">
+          <mat-icon>location_on</mat-icon>
+          <div class="info-content">
+            <span class="label">Delivery Address</span>
+            <span class="value">{{ order.customer.delivery_address }}</span>
           </div>
         </div>
       }
@@ -109,48 +146,10 @@
       </div>
     </div>
 
-    <!-- Status Update Section (Only for Active Orders) -->
-    @if (isActive) {
-      <mat-divider></mat-divider>
-      <div class="status-update-section">
-        <h3>
-          <mat-icon>update</mat-icon>
-          Update Order Status
-        </h3>
-        <mat-form-field appearance="outline" class="status-select">
-          <mat-label>Order Status</mat-label>
-          <mat-select [(ngModel)]="selectedStatus">
-            @for (status of statusOptions; track status) {
-              <mat-option [value]="status">{{ status }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-      </div>
-    }
   </mat-dialog-content>
 
   <mat-dialog-actions>
-    <button mat-button (click)="close()">Close</button>
-    @if (isActive) {
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="updateStatus()"
-        [disabled]="updating() || selectedStatus === order.order_status"
-      >
-        @if (updating()) {
-          <ng-container>
-            <mat-icon>hourglass_empty</mat-icon>
-            Updating...
-          </ng-container>
-        } @else {
-          <ng-container>
-            <mat-icon>check</mat-icon>
-            Update Status
-          </ng-container>
-        }
-      </button>
-    }
+    <button mat-stroked-button (click)="close()">Close</button>
   </mat-dialog-actions>
 </div>
 
