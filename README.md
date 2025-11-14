@@ -440,16 +440,21 @@ npm run format        # Format code
 ## 🚀 Deployment
 
 ### Backend Deployment
-- **Heroku**: `heroku config:set FIREBASE_SERVICE_ACCOUNT='...'`
-- **Vercel**: Add environment variables in dashboard
-- **AWS**: Use Lambda + API Gateway
-- **Docker**: Use provided Dockerfile
 
-### Frontend Deployment
-- **Vercel**: `vercel deploy`
-- **Netlify**: `netlify deploy`
-- **Firebase Hosting**: `firebase deploy`
-- **AWS S3**: Upload build artifacts
+**Important**: The backend includes build tools (`@nestjs/cli`, `typescript`) in production dependencies to support deployment platforms that build on the server.
+
+#### Quick Deploy Steps
+
+1. **Install dependencies** (builds automatically):
+```bash
+cd pos-backend
+npm install
+```
+
+2. **Start the server**:
+```bash
+npm start
+```
 
 ## 🔒 Security Best Practices
 
@@ -503,10 +508,56 @@ This project is part of the POS MVP system.
 
 ## 🆘 Troubleshooting
 
+### Deployment Error: "nest: not found"
+
+**Problem**: When deploying to production, you get the error "nest: not found"
+
+**Solution**: This has been fixed in the latest version. The `@nestjs/cli` and `typescript` packages are now in `dependencies` instead of `devDependencies`.
+
+**Steps to fix**:
+
+1. **Update your `package.json`** to ensure these packages are in `dependencies`:
+```json
+"dependencies": {
+  "@nestjs/cli": "^11.0.10",
+  "typescript": "^5.9.3",
+  "rimraf": "^6.0.1",
+  ...
+}
+```
+
+2. **Update your scripts** in `package.json`:
+```json
+"scripts": {
+  "prebuild": "rimraf dist",
+  "build": "nest build",
+  "start": "node dist/src/main",
+  "start:prod": "node dist/src/main",
+  "postinstall": "npm run build --if-present"
+}
+```
+
+3. **Redeploy**:
+```bash
+# Remove old dependencies
+rm -rf node_modules package-lock.json
+
+# Install fresh
+npm install
+
+# The postinstall hook will automatically build
+
+# Start the server
+npm start
+```
+
+**Why this happens**: Most deployment platforms only install `dependencies` in production, not `devDependencies`. Since NestJS needs the CLI to build, it must be in `dependencies`.
+
 ### Backend won't start
 - Check if port 3000 is available
 - Verify Firebase credentials are correct
 - Check `.env` file exists and is properly formatted
+- Ensure `dist/src/main.js` exists (run `npm run build` if missing)
 
 ### Frontend won't connect to backend
 - Verify backend is running on port 3000
@@ -522,6 +573,13 @@ This project is part of the POS MVP system.
 - Delete `node_modules` and `package-lock.json`
 - Run `npm install` again
 - Clear Angular cache: `npm run ng cache clean`
+- For backend: Ensure Node.js version >= 24.0.0
+
+### Production build fails
+- Check that `@nestjs/cli` is in `dependencies`
+- Verify TypeScript is installed
+- Run `npm run build` manually to see detailed errors
+- Check deployment platform logs for specific errors
 
 ## 📞 Support
 

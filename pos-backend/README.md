@@ -182,24 +182,39 @@ The server will start on `http://localhost:3000` with hot-reload enabled.
 
 ### Production Mode
 
+#### Option 1: Using npm start (Recommended for Deployment)
+
 ```bash
-# Build and start production server (automatically builds first)
-npm run start:prod
+# Install dependencies (builds automatically via postinstall hook)
+npm install
+
+# Start production server
+npm start
 ```
 
-This command will:
-1. Build the application (`npm run build`)
-2. Start the production server (`node dist/src/main`)
+The `postinstall` hook automatically builds the application after `npm install`, so you don't need to run `npm run build` separately.
 
-Alternatively, you can run the commands separately:
+#### Option 2: Manual Build and Start
 
 ```bash
 # Build the application
 npm run build
 
-# Start production server (without rebuilding)
+# Start production server
+npm run start:prod
+```
+
+#### Option 3: Direct Node Execution
+
+```bash
+# Build first
+npm run build
+
+# Start with node directly
 node dist/src/main
 ```
+
+**Note**: The build output is located in `dist/src/main.js`
 
 ### Watch Mode
 
@@ -312,6 +327,95 @@ Status transitions are validated to ensure proper workflow.
 
 ## 🐳 Deployment
 
+### Important: Production Dependencies
+
+The application requires the following packages in production:
+- `@nestjs/cli` - For building the application
+- `typescript` - For TypeScript compilation
+- `rimraf` - For cleaning build directory
+
+These are included in `dependencies` (not `devDependencies`) to ensure they're available during deployment.
+
+### Deployment Process
+
+#### Step 1: Install Dependencies
+
+```bash
+npm install
+```
+
+This will:
+1. Install all dependencies (including build tools)
+2. Automatically run `npm run build` via the `postinstall` hook
+3. Create the `dist/` directory with compiled code
+
+#### Step 2: Start the Application
+
+```bash
+npm start
+```
+
+This runs `node dist/src/main` to start the production server.
+
+### Platform-Specific Deployment
+
+#### Heroku
+
+1. Set environment variables:
+```bash
+heroku config:set NODE_ENV=production
+heroku config:set FIREBASE_SERVICE_ACCOUNT='{"type":"service_account",...}'
+heroku config:set JWT_SECRET=your-secret-key
+```
+
+2. Create `Procfile`:
+```
+web: npm start
+```
+
+3. Deploy:
+```bash
+git push heroku main
+```
+
+#### Vercel
+
+1. Install Vercel CLI:
+```bash
+npm i -g vercel
+```
+
+2. Deploy:
+```bash
+vercel --prod
+```
+
+3. Set environment variables in Vercel dashboard
+
+#### Railway
+
+1. Connect your GitHub repository
+2. Set environment variables in Railway dashboard
+3. Railway will automatically detect and build the NestJS app
+
+#### AWS / DigitalOcean / VPS
+
+1. SSH into your server
+2. Clone the repository
+3. Install dependencies:
+```bash
+npm install
+```
+
+4. Set environment variables in `.env` file
+5. Start with PM2:
+```bash
+npm install -g pm2
+pm2 start npm --name "pos-backend" -- start
+pm2 save
+pm2 startup
+```
+
 ### Docker
 
 ```bash
@@ -324,6 +428,34 @@ docker compose up
 # Run in detached mode
 docker compose up -d
 ```
+
+### Environment Variables for Production
+
+Make sure to set these environment variables on your deployment platform:
+
+```bash
+NODE_ENV=production
+PORT=3000
+FIREBASE_PROJECT_ID=your-project-id
+FIREBASE_SERVICE_ACCOUNT={"type":"service_account",...}
+JWT_SECRET=your-production-secret
+JWT_EXPIRY=86400s
+CACHE_TTL_SECONDS=300
+```
+
+### Build Troubleshooting
+
+If you encounter "nest: not found" error:
+- ✅ Ensure `@nestjs/cli` is in `dependencies` (not `devDependencies`)
+- ✅ Run `npm install` to install all dependencies
+- ✅ The `postinstall` hook should automatically build the app
+- ✅ Check that `dist/src/main.js` exists after installation
+
+If build fails during deployment:
+- ✅ Check Node.js version (requires >= 24.0.0)
+- ✅ Ensure TypeScript is installed
+- ✅ Check build logs for specific errors
+- ✅ Try running `npm run build` manually to see detailed errors
 
 ## 🔒 Security
 

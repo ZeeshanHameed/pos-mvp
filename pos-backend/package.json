@@ -10,12 +10,14 @@
     "npm": ">=11.0.0"
   },
   "scripts": {
+    "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
+    "start": "node dist/src/main",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "npm run build && node dist/src/main",
+    "start:prod": "node dist/src/main",
+    "postinstall": "npm run build --if-present",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -28,6 +30,7 @@
     "firebase:convert": "node scripts/convert-firebase-credentials.js"
   },
   "dependencies": {
+    "@nestjs/cli": "^11.0.10",
     "@nestjs/common": "^11.1.8",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.8",
@@ -47,15 +50,16 @@
     "level": "^10.0.0",
     "lru-cache": "^11.2.2",
     "reflect-metadata": "^0.2.2",
+    "rimraf": "^6.0.1",
     "rxjs": "^7.8.2",
     "socket.io": "^4.8.1",
     "swagger-ui-express": "^5.0.1",
+    "typescript": "^5.9.3",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.39.1",
-    "@nestjs/cli": "^11.0.10",
     "@nestjs/schematics": "^11.0.9",
     "@nestjs/testing": "^11.1.8",
     "@types/compression": "^1.8.1",
@@ -75,7 +79,6 @@
     "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.4"
   },
   "jest": {
