@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module';
 import { MenuModule } from './menu/menu.module';
 import { OrdersModule } from './orders/orders.module';
 import { MigrationsModule } from './migrations/migrations.module';
+import { HealthModule } from './health/health.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalHttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
@@ -26,6 +27,7 @@ import { RequestLoggerInterceptor } from './common/interceptors/request-logger.i
     MenuModule,
     OrdersModule,
     MigrationsModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [
