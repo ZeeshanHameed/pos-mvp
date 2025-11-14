@@ -1,0 +1,112 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <span>Checkout</span>
+</mat-toolbar>
+
+<div class="checkout-container">
+  <div class="checkout-content">
+    <!-- Cart Items -->
+    <mat-card class="cart-card">
+      <mat-card-header>
+        <mat-card-title>Your Order</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          @for (item of cartItems(); track item.id) {
+            <mat-list-item>
+              <div class="cart-item">
+                <div class="item-info">
+                  <h3>{{ item.name }}</h3>
+                  <p>${{ item.price.toFixed(2) }} each</p>
+                </div>
+                <div class="item-controls">
+                  <button
+                    mat-icon-button
+                    (click)="updateQuantity(item.id, item.qty - 1)"
+                    [disabled]="item.qty <= 1"
+                  >
+                    <mat-icon>remove</mat-icon>
+                  </button>
+                  <span class="quantity">{{ item.qty }}</span>
+                  <button mat-icon-button (click)="updateQuantity(item.id, item.qty + 1)">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="removeItem(item.id)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+                <div class="item-total">${{ (item.price * item.qty).toFixed(2) }}</div>
+              </div>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+          }
+        </mat-list>
+
+        <div class="order-summary">
+          <mat-divider></mat-divider>
+          <div class="summary-row total">
+            <span>Total:</span>
+            <span>${{ total().toFixed(2) }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Customer Information Form -->
+    <mat-card class="customer-card">
+      <mat-card-header>
+        <mat-card-title>Delivery Information</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <form [formGroup]="checkoutForm" class="customer-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Your Name</mat-label>
+            <input matInput formControlName="customerName" placeholder="Enter your name" required />
+            <mat-icon matPrefix>person</mat-icon>
+            @if (checkoutForm.get('customerName')?.hasError('required')) {
+              <mat-error>Name is required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Delivery Address</mat-label>
+            <textarea
+              matInput
+              formControlName="deliveryAddress"
+              placeholder="Enter your delivery address"
+              rows="3"
+              required
+            ></textarea>
+            <mat-icon matPrefix>location_on</mat-icon>
+            @if (checkoutForm.get('deliveryAddress')?.hasError('required')) {
+              <mat-error>Delivery address is required</mat-error>
+            }
+          </mat-form-field>
+
+          <button
+            mat-raised-button
+            color="primary"
+            class="full-width place-order-button"
+            (click)="placeOrder()"
+            [disabled]="checkoutForm.invalid || cartItems().length === 0 || submitting()"
+          >
+            @if (submitting()) {
+              <ng-container>
+                <mat-spinner diameter="20"></mat-spinner>
+                <span>Placing Order...</span>
+              </ng-container>
+            } @else {
+              <ng-container>
+                <mat-icon>check_circle</mat-icon>
+                <span>Place Order</span>
+              </ng-container>
+            }
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+

@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  pos-backend:
+    build: .
+    image: pos-backend:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID}
+      - FIREBASE_SERVICE_ACCOUNT_PATH=/secrets/firebase-service-account.json
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRY=${JWT_EXPIRY:-86400s}
+      - CACHE_TTL_SECONDS=${CACHE_TTL_SECONDS:-300}
+    volumes:
+      - ./secrets/firebase-service-account.json:/secrets/firebase-service-account.json:ro
+    restart: unless-stopped
+

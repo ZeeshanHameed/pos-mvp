@@ -1,0 +1,127 @@
+<div class="dashboard-container">
+  <!-- Toolbar -->
+  <mat-toolbar color="primary" class="toolbar">
+    <span class="toolbar-title">POS Staff Dashboard</span>
+    <span class="spacer"></span>
+    
+    <!-- Connection Status -->
+    <div class="connection-status">
+      @if (firebaseConnected()) {
+        <mat-icon class="status-icon connected">cloud_done</mat-icon>
+        <span class="status-text">Firebase</span>
+      } @else if (wsConnected()) {
+        <mat-icon class="status-icon connected">wifi</mat-icon>
+        <span class="status-text">WebSocket</span>
+      } @else {
+        <mat-icon class="status-icon disconnected">cloud_off</mat-icon>
+        <span class="status-text">Offline</span>
+      }
+    </div>
+
+    <span class="user-info">{{ currentUser()?.name }}</span>
+    <button mat-icon-button (click)="logout()">
+      <mat-icon>logout</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button mat-raised-button color="primary" (click)="navigateToCreateOrder()">
+      <mat-icon>add_shopping_cart</mat-icon>
+      Create New Order
+    </button>
+    <button mat-raised-button color="accent" (click)="navigateToOrderManagement()">
+      <mat-icon>manage_search</mat-icon>
+      Manage Orders
+    </button>
+  </div>
+
+  <!-- Active Orders Section -->
+  <div class="orders-section">
+    <h2 class="section-title">
+      Active Orders
+      <mat-icon [matBadge]="activeOrders().length" matBadgeColor="warn">pending_actions</mat-icon>
+    </h2>
+
+    @if (orderService.loading()) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+    } @else if (activeOrders().length === 0) {
+      <mat-card class="empty-state">
+        <mat-icon>inbox</mat-icon>
+        <p>No active orders</p>
+      </mat-card>
+    } @else {
+      <div class="orders-grid">
+        @for (order of activeOrders(); track order.id) {
+          <mat-card class="order-card" [class.highlight]="order.order_status === 'Pending'">
+            <mat-card-header>
+              <mat-card-title>Order #{{ order.id.substring(0, 8) }}</mat-card-title>
+              <mat-card-subtitle>{{ formatDate(order.order_date) }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="order-info">
+                <div class="info-row">
+                  <mat-icon>person</mat-icon>
+                  <span>{{ order.customer.name }}</span>
+                </div>
+                <div class="info-row">
+                  <mat-icon>shopping_bag</mat-icon>
+                  <span>{{ getItemsCount(order) }} items</span>
+                </div>
+                <div class="info-row">
+                  <mat-icon>attach_money</mat-icon>
+                  <span>${{ getTotalPrice(order).toFixed(2) }}</span>
+                </div>
+              </div>
+              <mat-chip [color]="getStatusColor(order.order_status)" highlighted>
+                {{ order.order_status }}
+              </mat-chip>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Completed Orders Section -->
+  <div class="orders-section">
+    <h2 class="section-title">
+      Completed Orders (Today)
+      <mat-icon [matBadge]="completedOrders().length" matBadgeColor="primary">check_circle</mat-icon>
+    </h2>
+
+    @if (completedOrders().length === 0) {
+      <mat-card class="empty-state">
+        <mat-icon>history</mat-icon>
+        <p>No completed orders today</p>
+      </mat-card>
+    } @else {
+      <div class="orders-grid">
+        @for (order of completedOrders().slice(0, 6); track order.id) {
+          <mat-card class="order-card completed">
+            <mat-card-header>
+              <mat-card-title>Order #{{ order.id.substring(0, 8) }}</mat-card-title>
+              <mat-card-subtitle>{{ formatDate(order.order_date) }}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="order-info">
+                <div class="info-row">
+                  <mat-icon>person</mat-icon>
+                  <span>{{ order.customer.name }}</span>
+                </div>
+                <div class="info-row">
+                  <mat-icon>attach_money</mat-icon>
+                  <span>${{ getTotalPrice(order).toFixed(2) }}</span>
+                </div>
+              </div>
+              <mat-chip highlighted>Completed</mat-chip>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    }
+  </div>
+</div>
+

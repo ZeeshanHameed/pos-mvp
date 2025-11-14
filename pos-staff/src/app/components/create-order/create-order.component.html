@@ -1,0 +1,168 @@
+<div class="create-order-container">
+  <!-- Toolbar -->
+  <mat-toolbar color="primary">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span>Create New Order</span>
+    <span class="spacer"></span>
+    <button mat-icon-button [matBadge]="itemCount()" matBadgeColor="warn">
+      <mat-icon>shopping_cart</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <div class="content-wrapper">
+    <!-- Menu Items Section -->
+    <div class="menu-section">
+      <h2>Menu Items</h2>
+
+      @if (loading()) {
+        <div class="loading-container">
+          <mat-spinner></mat-spinner>
+        </div>
+      } @else if (menuItems().length === 0) {
+        <mat-card class="empty-state">
+          <mat-icon>restaurant_menu</mat-icon>
+          <p>No menu items available</p>
+        </mat-card>
+      } @else {
+        <div class="menu-grid">
+          @for (item of menuItems(); track item.id) {
+            <mat-card class="menu-item-card" [class.out-of-stock]="item.remaining_stock <= 0">
+              <mat-card-content>
+                <div class="item-header">
+                  <h3>{{ item.name }}</h3>
+                  <span class="price">${{ item.price.toFixed(2) }}</span>
+                </div>
+                <div class="stock-info">
+                  <mat-icon [class.low-stock]="item.remaining_stock < 10">inventory</mat-icon>
+                  <span [class.low-stock]="item.remaining_stock < 10">
+                    {{ item.remaining_stock }} in stock
+                  </span>
+                </div>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  (click)="addToCart(item)"
+                  [disabled]="item.remaining_stock <= 0"
+                  class="add-button"
+                >
+                  <mat-icon>add_shopping_cart</mat-icon>
+                  Add to Cart
+                </button>
+              </mat-card-content>
+            </mat-card>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Cart Section -->
+    <div class="cart-section">
+      <mat-card class="cart-card">
+        <mat-card-header>
+          <mat-card-title>Cart Summary</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <!-- Customer Info Form -->
+          <form [formGroup]="orderForm">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Customer Name</mat-label>
+              <input matInput formControlName="customerName" placeholder="Enter customer name" />
+              <mat-icon matPrefix>person</mat-icon>
+              @if (orderForm.get('customerName')?.hasError('required') && orderForm.get('customerName')?.touched) {
+                <mat-error>Customer name is required</mat-error>
+              }
+            </mat-form-field>
+          </form>
+
+          <mat-divider></mat-divider>
+
+          <!-- Cart Items -->
+          <div class="cart-items">
+            @if (cartItems().length === 0) {
+              <div class="empty-cart">
+                <mat-icon>shopping_cart</mat-icon>
+                <p>Cart is empty</p>
+              </div>
+            } @else {
+              @for (item of cartItems(); track item.id) {
+                <div class="cart-item">
+                  <div class="item-details">
+                    <span class="item-name">{{ item.name }}</span>
+                    <span class="item-price">${{ item.price.toFixed(2) }}</span>
+                  </div>
+                  <div class="item-controls">
+                    <button mat-icon-button (click)="updateQuantity(item.id, item.qty - 1)">
+                      <mat-icon>remove</mat-icon>
+                    </button>
+                    <span class="quantity">{{ item.qty }}</span>
+                    <button mat-icon-button (click)="updateQuantity(item.id, item.qty + 1)">
+                      <mat-icon>add</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="removeFromCart(item.id)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                  <div class="item-total">${{ (item.price * item.qty).toFixed(2) }}</div>
+                </div>
+              }
+            }
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- Discount -->
+          <form [formGroup]="orderForm">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Discount</mat-label>
+              <input matInput type="number" formControlName="discount" placeholder="0.00" />
+              <span matPrefix>$</span>
+            </mat-form-field>
+          </form>
+
+          <!-- Totals -->
+          <div class="totals">
+            <div class="total-row">
+              <span>Subtotal:</span>
+              <span>${{ subtotal().toFixed(2) }}</span>
+            </div>
+            @if (discount() > 0) {
+              <div class="total-row discount">
+                <span>Discount:</span>
+                <span>-${{ discount().toFixed(2) }}</span>
+              </div>
+            }
+            <mat-divider></mat-divider>
+            <div class="total-row final">
+              <span>Total:</span>
+              <span>${{ total().toFixed(2) }}</span>
+            </div>
+          </div>
+
+          <!-- Place Order Button -->
+          <button
+            mat-raised-button
+            color="primary"
+            class="full-width place-order-button"
+            (click)="placeOrder()"
+            [disabled]="orderForm.invalid || cartItems().length === 0 || submitting()"
+          >
+            @if (submitting()) {
+              <ng-container>
+                <mat-spinner diameter="20"></mat-spinner>
+                <span>Placing Order...</span>
+              </ng-container>
+            } @else {
+              <ng-container>
+                <mat-icon>check_circle</mat-icon>
+                <span>Place Order</span>
+              </ng-container>
+            }
+          </button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+

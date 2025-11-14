@@ -1,0 +1,64 @@
+<mat-toolbar color="primary">
+  <span>POS Customer - Order Online</span>
+  <span class="spacer"></span>
+  <button mat-icon-button (click)="goToCheckout()" [matBadge]="cartItemCount()" matBadgeColor="warn">
+    <mat-icon>shopping_cart</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div class="menu-container">
+  <div class="header">
+    <h1>Our Menu</h1>
+    <p>Select items to add to your cart</p>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Loading menu...</p>
+    </div>
+  } @else {
+    <div class="menu-grid">
+      @for (item of menuItems(); track item.id) {
+        <mat-card class="menu-item-card" [class.out-of-stock]="isOutOfStock(item)">
+          <mat-card-header>
+            <mat-card-title>{{ item.name }}</mat-card-title>
+            <mat-card-subtitle>${{ item.price.toFixed(2) }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="stock-info">
+              @if (isOutOfStock(item)) {
+                <span class="stock-badge out-of-stock">Out of Stock</span>
+              } @else if (isLowStock(item)) {
+                <span class="stock-badge low-stock">Only {{ item.remaining_stock }} left</span>
+              } @else {
+                <span class="stock-badge in-stock">In Stock</span>
+              }
+            </div>
+          </mat-card-content>
+          <mat-card-actions>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="addToCart(item)"
+              [disabled]="isOutOfStock(item)"
+              class="full-width"
+            >
+              <mat-icon>add_shopping_cart</mat-icon>
+              Add to Cart
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  }
+
+  @if (!loading() && menuItems().length === 0) {
+    <div class="empty-state">
+      <mat-icon>restaurant_menu</mat-icon>
+      <h2>No menu items available</h2>
+      <p>Please check back later</p>
+    </div>
+  }
+</div>
+

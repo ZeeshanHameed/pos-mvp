@@ -1,0 +1,148 @@
+<div class="manage-orders-container">
+  <!-- Toolbar -->
+  <mat-toolbar color="primary">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span>Manage Orders</span>
+  </mat-toolbar>
+
+  <div class="content">
+    <h2>Active Orders</h2>
+
+    @if (loading()) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+      </div>
+    } @else if (activeOrders().length === 0) {
+      <mat-card class="empty-state">
+        <mat-icon>inbox</mat-icon>
+        <p>No active orders to manage</p>
+      </mat-card>
+    } @else {
+      <mat-accordion class="orders-accordion">
+        @for (order of activeOrders(); track order.id) {
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <div class="order-header">
+                  <span class="order-id">Order #{{ order.id.substring(0, 8) }}</span>
+                  <mat-chip [color]="getStatusColor(order.order_status)" highlighted>
+                    {{ order.order_status }}
+                  </mat-chip>
+                </div>
+              </mat-panel-title>
+              <mat-panel-description>
+                <div class="order-summary">
+                  <span>{{ order.customer.name }}</span>
+                  <span>{{ getItemsCount(order) }} items</span>
+                  <span>${{ getTotalPrice(order).toFixed(2) }}</span>
+                </div>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div class="order-details">
+              <!-- Order Info -->
+              <div class="info-section">
+                <h3>Order Information</h3>
+                <div class="info-grid">
+                  <div class="info-item">
+                    <mat-icon>event</mat-icon>
+                    <div>
+                      <span class="label">Date:</span>
+                      <span class="value">{{ formatDate(order.order_date) }}</span>
+                    </div>
+                  </div>
+                  <div class="info-item">
+                    <mat-icon>person</mat-icon>
+                    <div>
+                      <span class="label">Customer:</span>
+                      <span class="value">{{ order.customer.name }}</span>
+                    </div>
+                  </div>
+                  <div class="info-item">
+                    <mat-icon>store</mat-icon>
+                    <div>
+                      <span class="label">Type:</span>
+                      <span class="value">{{ order.order_type }}</span>
+                    </div>
+                  </div>
+                  @if (order.order_by) {
+                    <div class="info-item">
+                      <mat-icon>badge</mat-icon>
+                      <div>
+                        <span class="label">Ordered by:</span>
+                        <span class="value">{{ order.order_by.name }}</span>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Order Items -->
+              <div class="items-section">
+                <h3>Items</h3>
+                <div class="items-list">
+                  @for (item of order.items; track item.id) {
+                    <div class="item-row">
+                      <span class="item-name">{{ item.name }}</span>
+                      <span class="item-qty">x{{ item.qty }}</span>
+                      <span class="item-price">${{ item.price.toFixed(2) }}</span>
+                      <span class="item-total">${{ (item.price * item.qty).toFixed(2) }}</span>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Pricing -->
+              <div class="pricing-section">
+                <div class="price-row">
+                  <span>Subtotal:</span>
+                  <span>${{ (order.total_price + (order.discount || 0)).toFixed(2) }}</span>
+                </div>
+                @if (order.discount && order.discount > 0) {
+                  <div class="price-row discount">
+                    <span>Discount:</span>
+                    <span>-${{ order.discount.toFixed(2) }}</span>
+                  </div>
+                }
+                <div class="price-row total">
+                  <span>Total:</span>
+                  <span>${{ order.total_price.toFixed(2) }}</span>
+                </div>
+              </div>
+
+              <!-- Status Update -->
+              <div class="status-section">
+                <h3>Update Status</h3>
+                <div class="status-buttons">
+                  @for (status of getAvailableStatuses(order.order_status); track status) {
+                    <button
+                      mat-raised-button
+                      [color]="getStatusColor(status)"
+                      (click)="updateOrderStatus(order, status)"
+                    >
+                      <mat-icon>
+                        @switch (status) {
+                          @case ('In Progress') { schedule }
+                          @case ('Ready') { check_circle }
+                          @case ('Completed') { done_all }
+                          @default { arrow_forward }
+                        }
+                      </mat-icon>
+                      {{ status }}
+                    </button>
+                  }
+                  @if (getAvailableStatuses(order.order_status).length === 0) {
+                    <p class="no-transitions">No further status updates available</p>
+                  }
+                </div>
+              </div>
+            </div>
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
+    }
+  </div>
+</div>
+

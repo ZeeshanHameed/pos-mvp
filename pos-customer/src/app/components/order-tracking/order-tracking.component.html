@@ -1,0 +1,163 @@
+<mat-toolbar color="primary">
+  <span>Order Tracking</span>
+  <span class="spacer"></span>
+  <span class="connection-status">
+    <mat-icon [class.connected]="connectionStatus() !== 'Offline'">
+      {{ connectionStatus() !== 'Offline' ? 'cloud_done' : 'cloud_off' }}
+    </mat-icon>
+    {{ connectionStatus() }}
+  </span>
+</mat-toolbar>
+
+<div class="tracking-container">
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Loading order details...</p>
+    </div>
+  } @else if (order()) {
+    <div class="tracking-content">
+      <!-- Order Confirmation -->
+      <mat-card class="confirmation-card">
+        <mat-card-header>
+          <mat-icon mat-card-avatar class="success-icon">check_circle</mat-icon>
+          <mat-card-title>Order Confirmed!</mat-card-title>
+          <mat-card-subtitle>Order #{{ order()!.id.substring(0, 8) }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="confirmation-message">
+            Thank you for your order! We'll prepare it with care and deliver it to you soon.
+          </p>
+          <div class="order-info">
+            <div class="info-row">
+              <mat-icon>person</mat-icon>
+              <span>{{ order()!.customer.name }}</span>
+            </div>
+            <div class="info-row">
+              <mat-icon>location_on</mat-icon>
+              <span>{{ order()!.customer.delivery_address }}</span>
+            </div>
+            <div class="info-row">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ formatDate(order()!.order_date) }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Order Status Timeline -->
+      <mat-card class="status-card">
+        <mat-card-header>
+          <mat-card-title>Order Status</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="status-timeline">
+            <div class="status-step" [class.active]="isStatusActive('Pending')">
+              <div class="step-icon">
+                <mat-icon>{{ getStatusIcon('Pending') }}</mat-icon>
+              </div>
+              <div class="step-content">
+                <h3>Pending</h3>
+                <p>Order received</p>
+              </div>
+            </div>
+
+            <div class="status-connector" [class.active]="isStatusActive('In Progress')"></div>
+
+            <div class="status-step" [class.active]="isStatusActive('In Progress')">
+              <div class="step-icon">
+                <mat-icon>{{ getStatusIcon('In Progress') }}</mat-icon>
+              </div>
+              <div class="step-content">
+                <h3>In Progress</h3>
+                <p>Preparing your order</p>
+              </div>
+            </div>
+
+            <div class="status-connector" [class.active]="isStatusActive('Ready')"></div>
+
+            <div class="status-step" [class.active]="isStatusActive('Ready')">
+              <div class="step-icon">
+                <mat-icon>{{ getStatusIcon('Ready') }}</mat-icon>
+              </div>
+              <div class="step-content">
+                <h3>Ready</h3>
+                <p>Out for delivery</p>
+              </div>
+            </div>
+
+            <div class="status-connector" [class.active]="isStatusActive('Completed')"></div>
+
+            <div class="status-step" [class.active]="isStatusActive('Completed')">
+              <div class="step-icon">
+                <mat-icon>{{ getStatusIcon('Completed') }}</mat-icon>
+              </div>
+              <div class="step-content">
+                <h3>Completed</h3>
+                <p>Delivered</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="current-status">
+            <mat-chip [color]="getStatusColor(order()!.order_status)" highlighted>
+              <mat-icon>{{ getStatusIcon(order()!.order_status) }}</mat-icon>
+              Current Status: {{ order()!.order_status }}
+            </mat-chip>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Order Items -->
+      <mat-card class="items-card">
+        <mat-card-header>
+          <mat-card-title>Order Items</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list>
+            @for (item of order()!.items; track item.id) {
+              <mat-list-item>
+                <div class="order-item">
+                  <div class="item-name">{{ item.name }} × {{ item.qty }}</div>
+                  <div class="item-price">${{ (item.price * item.qty).toFixed(2) }}</div>
+                </div>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+            }
+          </mat-list>
+
+          <div class="order-total">
+            @if (hasDiscount()) {
+              <div class="total-row">
+                <span>Subtotal:</span>
+                <span>${{ getSubtotal().toFixed(2) }}</span>
+              </div>
+              <div class="total-row">
+                <span>Discount:</span>
+                <span>-${{ getDiscount().toFixed(2) }}</span>
+              </div>
+            }
+            <mat-divider></mat-divider>
+            <div class="total-row final">
+              <span>Total:</span>
+              <span>${{ order()!.total_price.toFixed(2) }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <button mat-raised-button color="primary" class="full-width" (click)="goToMenu()">
+        <mat-icon>restaurant_menu</mat-icon>
+        Order More
+      </button>
+    </div>
+  } @else {
+    <div class="error-state">
+      <mat-icon>error_outline</mat-icon>
+      <h2>Order not found</h2>
+      <p>We couldn't find the order you're looking for</p>
+      <button mat-raised-button color="primary" (click)="goToMenu()">Go to Menu</button>
+    </div>
+  }
+</div>
+
