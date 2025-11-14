@@ -1,0 +1,5 @@
+# Netlify SPA redirect rules
+# All routes should serve index.html for Angular routing to work
+
+/*    /index.html   200
+
