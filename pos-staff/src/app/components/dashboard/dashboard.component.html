@@ -3,7 +3,7 @@
   <mat-toolbar color="primary" class="toolbar">
     <span class="toolbar-title">POS Staff Dashboard</span>
     <span class="spacer"></span>
-    
+
     <!-- Connection Status -->
     <div class="connection-status">
       @if (firebaseConnected()) {
@@ -55,7 +55,7 @@
     } @else {
       <div class="orders-grid">
         @for (order of activeOrders(); track order.id) {
-          <mat-card class="order-card" [class.highlight]="order.order_status === 'Pending'">
+          <mat-card class="order-card" [class.highlight]="order.order_status === 'Pending'" (click)="openOrderDetails(order, true)">
             <mat-card-header>
               <mat-card-title>Order #{{ order.id.substring(0, 8) }}</mat-card-title>
               <mat-card-subtitle>{{ formatDate(order.order_date) }}</mat-card-subtitle>
@@ -100,7 +100,7 @@
     } @else {
       <div class="orders-grid">
         @for (order of completedOrders().slice(0, 6); track order.id) {
-          <mat-card class="order-card completed">
+          <mat-card class="order-card completed" (click)="openOrderDetails(order, false)">
             <mat-card-header>
               <mat-card-title>Order #{{ order.id.substring(0, 8) }}</mat-card-title>
               <mat-card-subtitle>{{ formatDate(order.order_date) }}</mat-card-subtitle>

@@ -8,11 +8,13 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../services/auth.service';
 import { OrderService } from '../../services/order.service';
 import { FirebaseSyncService } from '../../services/firebase-sync.service';
 import { WebSocketService } from '../../services/websocket.service';
 import { Order } from '../../models/order.model';
+import { OrderDetailsDialogComponent } from '../order-details-dialog/order-details-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -43,7 +45,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     public orderService: OrderService,
     private firebaseSync: FirebaseSyncService,
     private wsService: WebSocketService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -102,6 +105,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getItemsCount(order: Order): number {
     return order.items.reduce((sum, item) => sum + item.qty, 0);
+  }
+
+  openOrderDetails(order: Order, isActive: boolean): void {
+    this.dialog.open(OrderDetailsDialogComponent, {
+      width: '600px',
+      maxWidth: '90vw',
+      data: { order, isActive },
+    });
   }
 }
 
