@@ -15,7 +15,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "npm run build && node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -24,7 +24,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "queue:list": "ts-node scripts/manage-queue.ts list",
     "queue:remove": "ts-node scripts/manage-queue.ts remove",
-    "queue:clear": "ts-node scripts/manage-queue.ts clear"
+    "queue:clear": "ts-node scripts/manage-queue.ts clear",
+    "firebase:convert": "node scripts/convert-firebase-credentials.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.8",

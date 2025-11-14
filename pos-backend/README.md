@@ -96,7 +96,7 @@ npm install
 3. Enable **Firestore Database**
 4. Go to **Project Settings** → **Service Accounts**
 5. Click **Generate New Private Key**
-6. Save the JSON file as `serviceAccountKey.json` in the project root
+6. Download the JSON file
 
 **⚠️ Important**: Never commit the service account key to version control!
 
@@ -113,7 +113,7 @@ NODE_ENV=development
 
 # Firebase Configuration
 FIREBASE_PROJECT_ID=your-project-id
-FIREBASE_SERVICE_ACCOUNT_PATH=./serviceAccountKey.json
+FIREBASE_SERVICE_ACCOUNT={"type":"service_account","project_id":"my-project",...}
 
 # JWT Configuration
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
@@ -122,6 +122,53 @@ JWT_EXPIRY=24h
 # Cache Configuration
 CACHE_TTL_SECONDS=300
 ```
+
+### Firebase Credential Configuration
+
+The application uses Firebase credentials as a JSON string environment variable. This approach is ideal for all environments (development, staging, production) and works seamlessly with deployment platforms.
+
+#### Converting Service Account to JSON String
+
+We provide a helper script to convert your Firebase service account JSON file to a single-line string:
+
+```bash
+npm run firebase:convert <path-to-service-account.json>
+```
+
+**Example**:
+```bash
+npm run firebase:convert ./secrets/firebase-service-account.json
+```
+
+This will output:
+- ✅ The properly formatted JSON string
+- ✅ Instructions for `.env` file
+- ✅ Instructions for deployment platforms
+- ✅ Security warnings
+
+#### Setting the Environment Variable
+
+**For Local Development (.env file)**:
+
+```bash
+FIREBASE_SERVICE_ACCOUNT='{"type":"service_account","project_id":"my-project","private_key_id":"abc123","private_key":"-----BEGIN PRIVATE KEY-----\nABC...XYZ\n-----END PRIVATE KEY-----\n","client_email":"firebase-adminsdk-123@my-project.iam.gserviceaccount.com","client_id":"123456"}'
+```
+
+**For Deployment Platforms**:
+
+- **Heroku**: `heroku config:set FIREBASE_SERVICE_ACCOUNT='...'`
+- **Vercel**: Add to Environment Variables in project settings
+- **AWS Lambda**: Add to environment variables or use AWS Secrets Manager
+- **Docker**: Pass as environment variable in `docker-compose.yml` or Kubernetes secrets
+- **Railway/Render**: Add to environment variables in dashboard
+
+**⚠️ Security Warning**:
+
+- Never commit credentials to version control
+- Use environment variables or secret management services
+- Rotate credentials regularly
+- Restrict service account permissions to minimum required
+- Use different service accounts for different environments
 
 ## 🏃 Running the Application
 
@@ -136,11 +183,22 @@ The server will start on `http://localhost:3000` with hot-reload enabled.
 ### Production Mode
 
 ```bash
+# Build and start production server (automatically builds first)
+npm run start:prod
+```
+
+This command will:
+1. Build the application (`npm run build`)
+2. Start the production server (`node dist/src/main`)
+
+Alternatively, you can run the commands separately:
+
+```bash
 # Build the application
 npm run build
 
-# Start production server
-npm run start:prod
+# Start production server (without rebuilding)
+node dist/src/main
 ```
 
 ### Watch Mode
